@@ -1,7 +1,11 @@
 package com.example.bookillustrator.controller;
 
-import com.example.bookillustrator.repository.Book;
+import com.example.bookillustrator.dto.BookRequestDTO;
+import com.example.bookillustrator.dto.BookResponseDTO;
 import com.example.bookillustrator.service.BookService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,23 +21,26 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> getBooks() {
+    public List<BookResponseDTO> getBooks() {
         return bookService.getBooks();
     }
 
     @PostMapping
-    public Book createBook(@RequestBody Book book) {
-        return bookService.create(book);
+    public ResponseEntity<BookResponseDTO> createBook(
+            @Valid @RequestBody BookRequestDTO bookRequest
+    ) {
+        BookResponseDTO response = bookService.create(bookRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping(path = "{id}")
-    public void deleteBook(@PathVariable long id) {
+    public void deleteBook(@PathVariable Long id) {
         bookService.delete(id);
     }
 
     @PutMapping(path = "{id}")
     public void updateBook(
-            @PathVariable long id,
+            @PathVariable Long id,
             @RequestParam(required = false) String title) {
         bookService.update(id, title);
     }

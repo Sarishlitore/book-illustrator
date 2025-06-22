@@ -1,5 +1,6 @@
 package com.example.bookillustrator.repository;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,15 +13,17 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Book {
+public class Paragraph {
     @Id
     @GeneratedValue
     private Long id;
 
-    private String title;
-    private String author;
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "chapter_id")
+    private Chapter chapter;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<Chapter> chapters = new ArrayList<>();
+    @OneToMany(mappedBy = "paragraph", cascade = CascadeType.ALL)
+    private List<Sentence> sentences = new ArrayList<>();
 }
